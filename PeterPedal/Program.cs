@@ -193,7 +193,7 @@ class repairService
     }
 
     // Calculates the final total price for the receipt.
-    private decimal CalculateTotal(RepairCase c)
+    private decimal CalculateTotal( )
     {
         decimal partsPrice = CalculatePriceForGearCable() + CalculatePriceForSprocket() + CalculatePriceForBrakePad();
         decimal labor = HourlyRate * 2;
@@ -231,12 +231,6 @@ class repairService
     {
         var result = FindCase(frameNumber);
         Console.WriteLine($"{result.CustomerInfo.FirstName} has paid {result.TotalPrice.ToString("F2")} kr. The bike is ready to ride!");
-    }
-
-    // Old summary print, replaced by the receipt in finishRepair(). No longer called anywhere.
-    public void PrintCaseSummary(string frameNumber) {
-	RepairCase c = FindCase(frameNumber);
-	Console.WriteLine("Case summary for " + c.FrameNumber + ": " + c.Problem);
     }
 
     private RepairCase FindCase(string frameNumber)
