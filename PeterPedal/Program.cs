@@ -23,7 +23,7 @@ class RepairCase
 
 class SparePartCatalog
 {
-    private Dictionary<string, decimal> prices = new Dictionary<string, decimal>
+    private Dictionary<string, decimal> _prices = new Dictionary<string, decimal>
     {
         { "Gear cable", 150m },
         { "Sprocket", 300m },
@@ -32,9 +32,9 @@ class SparePartCatalog
 
     public decimal GetPrice(string partName)
     {
-        if (prices.ContainsKey(partName))
+        if (_prices.ContainsKey(partName))
         {
-            return prices[partName];
+            return _prices[partName];
         }
         return 0m;
     }
@@ -55,11 +55,11 @@ class Notifier
 
 class repairService
 {
-    private List<RepairCase> cases = new List<RepairCase>();
-    private SparePartCatalog catalog = new SparePartCatalog();
-    private Notifier notifier = new Notifier();
+    private List<RepairCase> _cases = new List<RepairCase>();
+    private SparePartCatalog _catalog = new SparePartCatalog();
+    private Notifier _notifier = new Notifier();
 
-    private const decimal HOURLY_RATE = 450;
+    private const decimal HourlyRate = 450;
 
     public void CreateCase(string firstName, string lastName, string phone, string FrameNumber, string problem)
     {
@@ -74,7 +74,7 @@ class repairService
         c.CustomerInfo = customer;
         c.Status = 0;
 
-        cases.Add(c);
+        _cases.Add(c);
 
         Console.WriteLine($"Case created for {customer.FirstName} {customer.LastName}, frame number {FrameNumber}.");
         Console.WriteLine($"Problem: {problem}");
@@ -112,17 +112,17 @@ class repairService
             if (finding.Contains("Gear cable"))
             {
                 c.Parts.Add("Gear cable");
-                Console.WriteLine($"Found part for case {stlnr}: Gear cable ({catalog.GetPrice("Gear cable")} kr)");
+                Console.WriteLine($"Found part for case {stlnr}: Gear cable ({_catalog.GetPrice("Gear cable")} kr)");
             }
             else if (finding.Contains("Sprocket"))
             {
                 c.Parts.Add("Sprocket");
-                Console.WriteLine($"Found part for case {stlnr}: Sprocket ({catalog.GetPrice("Sprocket")} kr)");
+                Console.WriteLine($"Found part for case {stlnr}: Sprocket ({_catalog.GetPrice("Sprocket")} kr)");
             }
             else if (finding.Contains("Brake pads"))
             {
                 c.Parts.Add("Brake pads");
-                Console.WriteLine($"Found part for case {stlnr}: Brake pads ({catalog.GetPrice("Brake pads")} kr)");
+                Console.WriteLine($"Found part for case {stlnr}: Brake pads ({_catalog.GetPrice("Brake pads")} kr)");
             }
         }
 
@@ -155,10 +155,10 @@ class repairService
     }
 
     // Calculates a price estimate for the customer's offer.
-    private decimal BeregnPris(RepairCase c)
+    private decimal CalculatePrice(RepairCase c)
     {
         decimal partsPrice = CalculatePriceForGearCable() + CalculatePriceForSprocket() + CalculatePriceForBrakePad();
-        decimal labor = HOURLY_RATE * 2;
+        decimal labor = HourlyRate * 2;
         decimal subtotal = partsPrice + labor;
         decimal vat = subtotal * 0.25m;
         return subtotal + vat;
@@ -167,7 +167,7 @@ class repairService
     public void CalculateOffer(string frameNumber)
     {
         RepairCase c = FindCase(frameNumber);
-        decimal Price = BeregnPris(c);
+        decimal Price = CalculatePrice(c);
         c.TotalPrice = Price;
         c.Status = 1;
 
@@ -175,7 +175,7 @@ class repairService
         string cstTlf = c.CustomerInfo.Phone;
         Console.WriteLine($"Offer for case {frameNumber}: {Price.ToString("F2")} kr, delivery in {d} days.");
         Console.WriteLine($"Calling {cstTlf}...");
-        notifier.LeaveVoicemail(cstTlf);
+        _notifier.LeaveVoicemail(cstTlf);
     }
 
     public void ApproveCase(string frameNumber)
@@ -196,7 +196,7 @@ class repairService
     private decimal CalculateTotal(RepairCase c)
     {
         decimal partsPrice = CalculatePriceForGearCable() + CalculatePriceForSprocket() + CalculatePriceForBrakePad();
-        decimal labor = HOURLY_RATE * 2;
+        decimal labor = HourlyRate * 2;
         decimal subtotal = partsPrice + labor;
         decimal vat = subtotal * 0.25m;
         return subtotal + vat;
@@ -219,7 +219,7 @@ class repairService
             c.Status = 3;
 
             String message = "Hi " + c.CustomerInfo.FirstName + ", your bike is ready for pickup!";
-            notifier.SendSms(c.CustomerInfo.Phone, message);
+            _notifier.SendSms(c.CustomerInfo.Phone, message);
 
             Console.WriteLine("--- Receipt ---");
             Console.WriteLine("Frame number: " + c.FrameNumber);
@@ -241,7 +241,7 @@ class repairService
 
     private RepairCase FindCase(string frameNumber)
     {
-        foreach (var c in cases)
+        foreach (var c in _cases)
         {
             if (c.FrameNumber == frameNumber)
             {
