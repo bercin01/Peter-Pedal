@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
 
-// Customer contact details for a repair case.
-class RepairCaseData
+public class RepairCaseData
 {
     public string FirstName;
     public string LastName;
     public string Phone;
 }
-
-class RepairCase
+/// <summary>
+/// Represents the customers contact details associated with a repair case.
+/// </summary>
+public class RepairCase
 {
     public string FrameNumber;
     public string Problem;
@@ -21,7 +22,7 @@ class RepairCase
     public decimal TotalPrice;
 }
 
-class SparePartCatalog
+public class SparePartCatalog
 {
     private Dictionary<string, decimal> prices = new Dictionary<string, decimal>
     {
@@ -29,7 +30,11 @@ class SparePartCatalog
         { "Sprocket", 300m },
         { "Brake pads", 120m }
     };
-
+    /// <summary>
+    /// Looks up the price for a specific spare part.
+    /// </summary>
+    /// <param name="partName">The name of the spare part.</param>
+    /// <returns>The price of the spare part as a decimal, or 0 if the part is not found.</returns>
     public decimal GetPrice(string partName)
     {
         if (prices.ContainsKey(partName))
@@ -40,27 +45,45 @@ class SparePartCatalog
     }
 }
 
-class Notifier
+/// <summary>
+/// Responsible for sending notifications to the customer via SMS or voicemail.
+/// </summary>
+public class Notifier
 {
+    /// <summary>
+    /// Sends an SMS message to a phone number.
+    /// </summary>
+    /// <param name="phone">The customers phone number.</param>
+    /// <param name="message">The message to send.</param>
     public void SendSms(string phone, String message)
     {
         Console.WriteLine("SMS to " + phone + ": " + message);
     }
-
+    /// <summary>
+    /// Leaves a voicemail on the customers phone.
+    /// </summary>
+    /// <param name="phone">The customers phone number.</param>
     public void LeaveVoicemail(string phone)
     {
         Console.WriteLine($"Voicemail left for {phone}: please call us back regarding your bike.");
     }
 }
 
-class repairService
+public class repairService
 {
     private List<RepairCase> cases = new List<RepairCase>();
     private SparePartCatalog catalog = new SparePartCatalog();
     private Notifier notifier = new Notifier();
 
     private const decimal HOURLY_RATE = 450;
-
+    /// <summary>
+    /// Creates a new repair case and stores the customers data.
+    /// </summary>
+    /// <param name="firstName">The customers first name.</param>
+    /// <param name="lastName">The customers laast name.</param>
+    /// <param name="phone">The customers phone number.</param>
+    /// <param name="FrameNumber">The bike Frame number.</param>
+    /// <param name="problem">The problem.</param>
     public void CreateCase(string firstName, string lastName, string phone, string FrameNumber, string problem)
     {
         RepairCaseData customer = new RepairCaseData();
@@ -79,7 +102,11 @@ class repairService
         Console.WriteLine($"Case created for {customer.FirstName} {customer.LastName}, frame number {FrameNumber}.");
         Console.WriteLine($"Problem: {problem}");
     }
-
+    /// <summary>
+    /// Registers the (mekanikerens?) findings for a specific case.
+    /// </summary>
+    /// <param name="frameNumber">The bike frame number.</param>
+    /// <param name="findings">A list of descriptions of the problems that are found.</param>
     public void registerFindings(string frameNumber, List<string> findings)
     {
         RepairCase c = FindCase(frameNumber);
@@ -101,7 +128,10 @@ class repairService
             }
         }
     }
-
+    /// <summary>
+    /// Looks up the findings of a case and adds the spare parts that are neded.
+    /// </summary>
+    /// <param name="frameNumber">The bike's frame number.</param>
     public void LookUpParts(string frameNumber)
     {
         RepairCase c = FindCase(frameNumber);
@@ -129,7 +159,9 @@ class repairService
         Int32 numberOfParts = c.Parts.Count;
         Console.WriteLine($"Found {numberOfParts} part(s) for case {frameNumber}.");
     }
-
+    /// <summary>
+    /// Calculates the price for a gear cable including markup.
+    /// </summary>
     // Calculates the price of a gear cable including markup.
     private decimal CalculatePriceForGearCable()
     {
@@ -138,6 +170,10 @@ class repairService
         return price + markup;
     }
 
+    /// <summary>
+    /// Calculates the price for a sprocket with markup.
+    /// </summary>
+    /// <returns>The total price for the sprocket with the markup.</returns>
     // Calculates the price of a sprocket including markup.
     private decimal CalculatePriceForSprocket()
     {
@@ -145,14 +181,22 @@ class repairService
         decimal markup = price * 0.1m;
         return price + markup;
     }
-
-    // Calculates the price of brake pads including markup.
+    /// <summary>
+    /// Calculates the price for brake pads with the markup.
+    /// </summary>
+    /// <returns>The total price for the brake pads.</returns>
+    // Calculates the price of brake pads with the markup added.
     private decimal CalculatePriceForBrakePad()
     {
         decimal price = 120m;
         decimal markup = price * 0.1m;
         return price + markup;
     }
+    /// <summary>
+    /// Calculates a price estimate (offer) for a repair case including labor and vat.
+    /// </summary>
+    /// <param name="c">The repair case to calculate for.</param>
+    /// <returns>The total estimatet price.</returns>
 
     // Calculates a price estimate for the customer's offer.
     private decimal BeregnPris(RepairCase c)
