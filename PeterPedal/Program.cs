@@ -17,7 +17,7 @@ class RepairCase
     public List<string> Findings = new List<string>();
     public List<string> Parts = new List<string>();
     public int Status; // 0 = created, 1 = awaiting approval, 2 = approved, 3 = finished
-    public Boolean Approved;
+    public bool Approved;
     public decimal TotalPrice;
 }
 
@@ -42,7 +42,7 @@ class SparePartCatalog
 
 class Notifier
 {
-    public void SendSms(string phone, String message)
+    public void SendSms(string phone, string message)
     {
         Console.WriteLine("SMS to " + phone + ": " + message);
     }
@@ -126,7 +126,7 @@ class repairService
             }
         }
 
-        Int32 numberOfParts = c.Parts.Count;
+        int numberOfParts = c.Parts.Count;
         Console.WriteLine($"Found {numberOfParts} part(s) for case {frameNumber}.");
     }
 
@@ -218,7 +218,7 @@ class repairService
             c.TotalPrice = total;
             c.Status = 3;
 
-            String message = "Hi " + c.CustomerInfo.FirstName + ", your bike is ready for pickup!";
+            string message = "Hi " + c.CustomerInfo.FirstName + ", your bike is ready for pickup!";
             notifier.SendSms(c.CustomerInfo.Phone, message);
 
             Console.WriteLine("--- Receipt ---");
