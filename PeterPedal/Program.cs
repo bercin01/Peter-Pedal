@@ -63,12 +63,12 @@ class repairService
 
     public void CreateCase(string firstName, string lastName, string phone, string FrameNumber, string problem)
     {
-        RepairCaseData customer = new RepairCaseData();
+        var customer = new RepairCaseData();
         customer.FirstName = firstName;
         customer.LastName = lastName;
         customer.Phone = phone;
 
-        RepairCase c = new RepairCase();
+        var c = new RepairCase();
         c.FrameNumber = FrameNumber;
         c.Problem = problem;
         c.CustomerInfo = customer;
