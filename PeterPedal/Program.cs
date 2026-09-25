@@ -80,7 +80,7 @@ class repairService
         Console.WriteLine($"Problem: {problem}");
     }
 
-    public void registerFindings(string frameNumber, List<string> findings)
+    public void RegisterFindings(string frameNumber, List<string> findings)
     {
         RepairCase c = FindCase(frameNumber);
         if (c != null)
@@ -102,9 +102,9 @@ class repairService
         }
     }
 
-    public void LookUpParts(string frameNumber)
+    public void LookUpParts(string FrameNumber)
     {
-        RepairCase c = FindCase(frameNumber);
+        RepairCase c = FindCase(FrameNumber);
 
         foreach (var finding in c.Findings)
         {
@@ -189,7 +189,7 @@ class repairService
     // Sofia repairs the bike.
     public void PimpMyBike(string frameNumber) {
         RepairCase c = FindCase(frameNumber);
-        Console.WriteLine($"Sofia is repairing the bike, frame number {c.FrameNumber}...");
+        Console.WriteLine($"Sofia is repairing the bike, frame number {c.frameNumber}...");
     }
 
     // Calculates the final total price for the receipt.
@@ -202,7 +202,7 @@ class repairService
         return subtotal + vat;
     }
 
-    public void finishRepair(string frameNumber)
+    public void FinishRepair(string frameNumber)
     {
         RepairCase c = FindCase(frameNumber);
 
@@ -222,7 +222,7 @@ class repairService
             notifier.SendSms(c.CustomerInfo.Phone, message);
 
             Console.WriteLine("--- Receipt ---");
-            Console.WriteLine("Frame number: " + c.FrameNumber);
+            Console.WriteLine("Frame number: " + c.frameNumber);
             Console.WriteLine("Total: " + Math.Round(total, 2) + " kr");
         }
     }
@@ -236,7 +236,7 @@ class repairService
     // Old summary print, replaced by the receipt in finishRepair(). No longer called anywhere.
     public void PrintCaseSummary(string frameNumber) {
 	RepairCase c = FindCase(frameNumber);
-	Console.WriteLine("Case summary for " + c.FrameNumber + ": " + c.Problem);
+	Console.WriteLine("Case summary for " + c.frameNumber + ": " + c.Problem);
     }
 
     private RepairCase FindCase(string frameNumber)
@@ -259,7 +259,7 @@ class Program
         var service = new repairService();
 
         service.CreateCase("Egon", "Cykelmyggen", "20123456", "STL-4471", "The gears are not shifting properly and the bike is almost impossible to ride.");
-        service.registerFindings("STL-4471", new List<string> { "Gear cable needs replacement", "Sprocket is worn", "Brake pads are worn" });
+        service.RegisterFindings("STL-4471", new List<string> { "Gear cable needs replacement", "Sprocket is worn", "Brake pads are worn" });
         service.LookUpParts("STL-4471");
         service.CalculateOffer("STL-4471");
         service.ApproveCase("STL-4471");
